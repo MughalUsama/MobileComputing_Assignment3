@@ -7,11 +7,11 @@
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:background="@color/colorGrey"
         android:id="@+id/rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="10dp"
-        android:background="@color/colorGrey"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

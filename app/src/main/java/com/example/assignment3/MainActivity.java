@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
+        RVAdapter adapter = new RVAdapter(this,null);
+        rv.setAdapter(adapter);
         rv.setLayoutManager(llm);
 
     }
