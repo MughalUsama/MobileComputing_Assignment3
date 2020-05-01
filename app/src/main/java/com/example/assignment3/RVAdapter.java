@@ -1,6 +1,9 @@
 package com.example.assignment3;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -58,49 +62,47 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // picasso.setLoggingEnabled(true);
-        Picasso.get().load(baseUrl+ "img/cover_how_to_make_mistakes_in_python.gif").placeholder(R.drawable.loading).into(holder.book_image);
+        Picasso.get().load(baseUrl+ booksArray.get(position).book_cover_url).placeholder(R.drawable.loading).into(holder.book_image);
 
-        holder.book_title.setText("BOOK");
-        holder.book_level.setText("Beginner");
-        holder.book_description.setText("BOOK Description. BOOK Description BOOK Description");
-//        String str = booksUrls[position].substring(booksUrls[position].length() - 4);
-//        if(str.equals(".zip") || str.equals(".pdf")){
-//            // change the text of button to "DOWNLOAD"
-        holder.book_btn.setText("Read Online");
-        // set click event on Button and then start downloading file through download manger
-//            holder.tv_btn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String url = booksUrls[position];
-//                    DownloadManager downloadManager = (DownloadManager)context.getSystemService(context.DOWNLOAD_SERVICE);
-//                    Uri uri = Uri.parse(url);
-//                    DownloadManager.Request request = new DownloadManager.Request(uri);
-//                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-//                    Long ref = downloadManager.enqueue(request);
-//                }
-//            });
-//        }
-//        else{
-//            holder.tv_btn.setText("READ ONLINE");
-//            //set click event on Button and then move to google chorme to read book online
-//            holder.tv_btn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String url = booksUrls[position];
-//                    Intent intent = new Intent(Intent.ACTION_VIEW);
-//                    intent.setData(Uri.parse(url));
-//                    ContextCompat.startActivity(context, intent, null);
-//                }
-//            });
-//    }
+        holder.book_title.setText(booksArray.get(position).book_title);
+        holder.book_level.setText(booksArray.get(position).book_level);
+        holder.book_description.setText(booksArray.get(position).book_description);
+        String file_url[] = booksArray.get(position).book_url.split("\\.");
+        String file_extension = file_url[file_url.length - 1];
+        Log.d("Extension","#" + file_extension);
+        final String download_url = booksArray.get(position).book_url;
+        if(file_extension.equals("zip") || file_extension.equals("pdf")){
+            holder.book_btn.setText("DOWNLOAD");
+
+            holder.book_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DownloadManager downloadManager = (DownloadManager)context.getSystemService(context.DOWNLOAD_SERVICE);
+                    Uri uri = Uri.parse(download_url);
+                    DownloadManager.Request download_request = new DownloadManager.Request(uri);
+                    download_request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    downloadManager.enqueue(download_request);
+                }
+            });
+        }
+        else{
+                holder.book_btn.setText("READ ONLINE");
+                holder.book_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(download_url));
+                    ContextCompat.startActivity(context, intent, null);
+                }
+            });
+        }
     }
-
 
     @Override
     public int getItemCount() {
-        return 1;
+        return booksArray.size();
     }
 
 }
